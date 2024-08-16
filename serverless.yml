@@ -1,0 +1,41 @@
+# "org" ensures this Service is used with the correct Serverless Framework Access Key.
+org: ormagomy
+# "app" enables Serverless Framework Dashboard features and sharing them with other Services.
+app: meeting-planner-api
+# "service" is the name of this project. This will also be added to your AWS resource names.
+service: meeting-planner-api
+useDotenv: true
+
+# Pin the service to only deploy with a specific Serverless version
+frameworkVersion: '3'
+
+plugins:
+  # - serverless-plugin-typescript
+  - serverless-esbuild
+  - serverless-offline
+
+package:
+  individually: true
+
+custom:
+  esbuild:
+    packager: pnpm
+    plugins: esbuild-plugins.js
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  stage: ${opt:stage, 'dev'}
+  region: us-west-2
+  profile: meeting-planner-api
+
+  environment:
+    NODE_ENV: ${self:provider.stage}
+    MONGODB_URI: ${env:MONGODB_URI}
+    MONGODB_DB_NAME: ${env:MONGODB_DB_NAME}
+
+functions:
+  api:
+    handler: src/sls-index.handler
+    events:
+      - httpApi: "*"
