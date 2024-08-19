@@ -3,6 +3,7 @@ import { ObjectId } from 'mongodb'
 import { Service } from 'typedi'
 
 import { CreateTodoType, Todo, UpdateTodoType } from '@src/modules/todo/entity'
+import { NotFoundError } from '@src/utils/errors'
 
 export const TodoMongooseModel = getModelForClass(Todo)
 
@@ -29,12 +30,5 @@ export default class TodoModel {
 
     todo.set(data)
     return todo.save()
-  }
-}
-
-// TODO: move this to a better home
-class NotFoundError extends Error {
-  constructor() {
-    super('Entity not found')
   }
 }
